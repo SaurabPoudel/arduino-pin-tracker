@@ -8,7 +8,7 @@ pub enum PinType {
     PWM,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PinMode {
     Input,
     Output,
@@ -23,7 +23,7 @@ pub struct Pin {
     pub pin_type: PinType,
     pub is_in_use: bool,
     pub current_function: Option<String>,
-    mode: PinMode::Unset,
+    pub mode: PinMode,
 }
 
 impl Pin {
@@ -33,7 +33,7 @@ impl Pin {
             pin_type,
             is_in_use: false,
             current_function: None,
-            mode: PinMode::Unset,
+            mode: crate::pin::PinMode::Unset,
         }
     }
 
@@ -46,7 +46,7 @@ impl Pin {
     pub fn clear_usage(&mut self) {
         self.is_in_use = false;
         self.current_function = None;
-        self.mode = PinMode::Unset;
+        self.mode = crate::pin::PinMode::Unset;
     }
 }
 

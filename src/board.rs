@@ -16,7 +16,6 @@ impl ArduinoBoard {
             name: name.to_string(),
             pins: HashMap::new(),
         };
-
         for i in 0..14 {
             board.pins.insert(i, Pin::new(i, PinType::Digital));
         }
@@ -41,7 +40,7 @@ impl ArduinoBoard {
     ) -> Result<(), String> {
         if let Some(pin) = self.pins.get_mut(&pin_number) {
             pin.set_usage(in_use, function, mode);
-            OK(())
+            Ok(())
         } else {
             Err(format!("Pin {} not found", pin_number))
         }
@@ -60,10 +59,10 @@ impl ArduinoBoard {
         let json = serde_json::to_string_pretty(&self)
             .map_err(|e| format!("Failed to serialize board data: {}", e))?;
         fs::write(filename, json).map_err(|e| format!("Failed to write to file: {}", e))?;
-        OK(())
+        Ok(())
     }
 
-    pub fn load_from_file(filname: &str) -> Result<Self, String> {
+    pub fn load_from_file(filename: &str) -> Result<Self, String> {
         if !Path::new(filename).exists() {
             return Ok(Self::new("Arduino Uno"));
         }
@@ -73,5 +72,13 @@ impl ArduinoBoard {
         serde_json::from_str(&contents).map_err(|e| format!("Failed to parse JSON:{}", e))
     }
 
-    pub fn display_status(&self) {}
+    pub fn display_status(&self) {
+        println!("\n Arduino {} Pin Status:", self.name);
+        println!("------------------------------------");
+        for i in 0..20 {
+            if let Some(pin) = self.pins.get(&i) {
+                println!("{}", pin);
+            }
+        }
+    }
 }
